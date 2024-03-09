@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 19:44:11 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/09 19:00:41 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/09 21:19:07 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	*routine(void *philo_pointer)
 	t_philo	*philo;
 
 	philo = (t_philo *) philo_pointer;
-	philo->time_to_die = philo->data->death_time + get_time();
+	philo->time_to_die = philo->data->life_span + get_time();
 	if (pthread_create(&philo->t1, NULL, &supervisor, (void *)philo))
 		return ((void *)1);
 	while (philo->data->dead == 0)
@@ -70,7 +70,7 @@ void	*routine(void *philo_pointer)
 	return ((void *)0);
 }
 
-int	thread_init(t_data *data)
+int	run(t_data *data)
 {
 	int			i;
 	pthread_t	t0;
@@ -84,14 +84,14 @@ int	thread_init(t_data *data)
 	}
 	while (++i < data->philo_num)
 	{
-		if (pthread_create(&data->tid[i], NULL, &routine, &data->philos[i]))
+		if (pthread_create(&data->thread_id[i], NULL, &routine, &data->philos[i]))
 			return (error(TH_ERR, data));
 		ft_usleep(1);
 	}
 	i = -1;
 	while (++i < data->philo_num)
 	{
-		if (pthread_join(data->tid[i], NULL))
+		if (pthread_join(data->thread_id[i], NULL))
 			return (error(JOIN_ERR, data));
 	}
 	return (0);

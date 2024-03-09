@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 19:52:10 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/09 19:09:27 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/09 21:13:20 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 int	case_one(t_data *data)
 {
 	data->start_time = get_time();
-	if (pthread_create(&data->tid[0], NULL, &routine, &data->philos[0]))
+	if (pthread_create(&data->thread_id[0], NULL, &routine, &data->philos[0]))
 		return (error(TH_ERR, data));
-	pthread_detach(data->tid[0]);
+	pthread_detach(data->thread_id[0]);
 	while (data->dead == 0)
 		ft_usleep(0);
 	ft_exit(data);
@@ -27,8 +27,8 @@ int	case_one(t_data *data)
 
 void	clear_data(t_data	*data)
 {
-	if (data->tid)
-		free(data->tid);
+	if (data->thread_id)
+		free(data->thread_id);
 	if (data->forks)
 		free(data->forks);
 	if (data->philos)
@@ -68,7 +68,7 @@ int	main(int argc, char *argv[])
 		return (1);
 	if (data.philo_num == 1)
 		return (case_one(&data));
-	if (thread_init(&data))
+	if (run(&data))
 		return (1);
 	ft_exit(&data);
 	return (0);

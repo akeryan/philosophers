@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 10:29:51 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/09 19:10:29 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/09 21:18:43 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,15 +57,15 @@ typedef struct s_philo
 
 typedef struct s_data
 {
-	pthread_t		*tid;
-	int				philo_num;
+	pthread_t		*thread_id;
 	int				meals_nb;
 	int				dead;
 	int				finished;
 	t_philo			*philos;
-	u_int64_t		death_time;
-	u_int64_t		eat_time;
-	u_int64_t		sleep_time;
+	int				philo_num;
+	u_int64_t		life_span;
+	u_int64_t		eat_span;
+	u_int64_t		sleep_span;
 	u_int64_t		start_time;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	lock;
@@ -86,7 +86,7 @@ int			ft_usleep(useconds_t time);
 
 //	init
 int			init(t_data *data, char **argv, int argc);
-int			thread_init(t_data *data);
+int			run(t_data *data);
 
 //	checker
 int			input_checker(char **argv);

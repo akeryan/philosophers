@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 18:28:35 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/09 21:19:07 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/09 21:21:21 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,6 @@ int	init_data(t_data *data, char **argv, int argc)
 		data->meals_nb = (int) ft_atoi(argv[5]);
 	else
 		data->meals_nb = -1;
-	//if (data->philo_num <= 0 || data->philo_num > 200 || data->life_span < 0
-		//|| data->eat_span < 0 || data->sleep_span < 0)
-		//return (error(ERR_IN_2, NULL));
 	data->dead = 0;
 	data->finished = 0;
 	pthread_mutex_init(&data->write, NULL);

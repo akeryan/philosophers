@@ -6,7 +6,7 @@
 #    By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/08 19:39:51 by akeryan           #+#    #+#              #
-#    Updated: 2024/03/09 19:16:01 by akeryan          ###   ########.fr        #
+#    Updated: 2024/03/10 13:25:52 by akeryan          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,10 +15,11 @@ NAME = philo
 CC = cc #-pthreads
 FLAGS = -Wall -Wextra -Werror
 
-MANDATORY = philo.c \
+MANDATORY = run.c \
 			main.c \
 			parsing.c \
-			utils.c \
+			utils_0.c \
+			utils_1.c \
 			actions.c \
 			init.c 
 

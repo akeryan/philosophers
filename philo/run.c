@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 19:44:11 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/09 21:22:59 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/10 14:34:40 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@ void	*supervisor(void *philo_pointer)
 		pthread_mutex_lock(&philo->lock);
 		if (get_time() >= philo->time_to_die && philo->eating == 0)
 			messages(DIED, philo);
-		if (philo->eat_cont == philo->data->meals_nb)
+		if (philo->eat_count == philo->data->meals_num)
 		{
 			pthread_mutex_lock(&philo->data->lock);
 			philo->data->finished++;
-			philo->eat_cont++;
+			philo->eat_count++;
 			pthread_mutex_unlock(&philo->data->lock);
 		}
 		pthread_mutex_unlock(&philo->lock);
@@ -77,22 +77,22 @@ int	run(t_data *data)
 
 	i = -1;
 	data->start_time = get_time();
-	if (data->meals_nb > 0)
+	if (data->meals_num > 0)
 	{
 		if (pthread_create(&t0, NULL, &monitor, &data->philos[0]))
-			return (error(TH_ERR, data));
+			return (error_msg("thread creation failed in run()", data));
 	}
 	while (++i < data->philo_num)
 	{
 		if (pthread_create(&data->thread_id[i], NULL, &routine, &data->philos[i]))
-			return (error(TH_ERR, data));
+			return (error_msg("thread creation failed in run()", data));
 		ft_usleep(1);
 	}
 	i = -1;
 	while (++i < data->philo_num)
 	{
 		if (pthread_join(data->thread_id[i], NULL))
-			return (error(JOIN_ERR, data));
+			return (error_msg("pthread_join failed in run()", data));
 	}
 	return (0);
 }

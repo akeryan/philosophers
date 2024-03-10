@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 19:02:41 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/09 21:19:07 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/10 13:38:32 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ u_int64_t	get_time(void)
 	struct timeval	tv;
 
 	if (gettimeofday(&tv, NULL))
-		return (error("gettimeofday() FAILURE\n", NULL));
+		return (error_msg("gettimeofday() FAILURE\n", NULL));
 	return ((tv.tv_sec * (u_int64_t)1000) + (tv.tv_usec / 1000));
 }
 
@@ -32,7 +32,7 @@ void	messages(char *str, t_philo *philo)
 		printf("%llu %d %s\n", time, philo->id, str);
 		philo->data->dead = 1;
 	}
-	if (!philo->data->dead)
+	if (philo->data->dead == 0)
 		printf("%llu %d %s\n", time, philo->id, str);
 	pthread_mutex_unlock(&philo->data->write);
 }
@@ -60,7 +60,7 @@ void	eat(t_philo *philo)
 	philo->eating = 1;
 	philo->time_to_die = get_time() + philo->data->life_span;
 	messages(EATING, philo);
-	philo->eat_cont++;
+	philo->eat_count++;
 	ft_usleep(philo->data->eat_span);
 	philo->eating = 0;
 	pthread_mutex_unlock(&philo->lock);

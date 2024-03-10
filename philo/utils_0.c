@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   utils_0.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 19:48:30 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/09 21:34:12 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/10 14:42:02 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	ft_isdigit(int c)
+static int	ft_isdigit(int c)
 {
 	if (c >= '0' && c <= '9')
 		return (1);
@@ -64,15 +64,4 @@ int	ft_strcmp(const char *s1, const char *s2)
 	while (s1[i] != '\0' && (s1[i] == s2[i]))
 		i++;
 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-}
-
-bool	is_in_strings(char c, char *str)
-{
-	while (*str)
-	{
-		if (*str == c)
-			return (true);
-		str++;
-	}
-	return (false);
 }

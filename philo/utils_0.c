@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 19:48:30 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/10 14:42:02 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/10 17:38:35 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	ft_atoi(const char *str)
 
 int	ft_usleep(useconds_t time)
 {
-	u_int64_t	start;
+	LONG	start;
 
 	start = get_time();
 	while ((get_time() - start) < time)

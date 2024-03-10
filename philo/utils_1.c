@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 13:26:13 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/10 14:33:55 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/10 17:26:07 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	one_philo(t_data *data)
 	if (pthread_create(&data->thread_id[0], NULL, &routine, &data->philos[0]))
 		return (error_msg("thread creation failed in one_philo()", data));
 	pthread_detach(data->thread_id[0]);
-	while (data->dead == 0)
+	while (data->dead == false)
 		ft_usleep(0);
 	destroy(data);
 	return (0);

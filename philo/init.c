@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 18:28:35 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/10 14:38:16 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/10 17:38:35 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,14 +64,14 @@ void	init_philos(t_data *data)
 int	init_data(int argc, char **argv, t_data *data)
 {
 	data->philo_num = (int) ft_atoi(argv[1]);
-	data->life_span = (u_int64_t) ft_atoi(argv[2]);
-	data->eat_span = (u_int64_t) ft_atoi(argv[3]);
-	data->sleep_span = (u_int64_t) ft_atoi(argv[4]);
+	data->life_span = (LONG) ft_atoi(argv[2]);
+	data->eat_span = (LONG) ft_atoi(argv[3]);
+	data->sleep_span = (LONG) ft_atoi(argv[4]);
 	if (argc == 6)
 		data->meals_num = (int) ft_atoi(argv[5]);
 	else
 		data->meals_num = -1;
-	data->dead = 0;
+	data->dead = false;
 	data->finished = 0;
 	pthread_mutex_init(&data->write, NULL);
 	pthread_mutex_init(&data->lock, NULL);

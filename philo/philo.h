@@ -78,12 +78,10 @@ int			ft_atoi(const char *str);
 int			ft_strcmp(const char *s1, const char *s2);
 void		free_data(t_data	*data);
 void		destroy(t_data *data);
+LONG		get_time(void);
 
 // error handling/messaging --------------------------------------
 int			error_msg(char *str, t_data *data);
 void		print_state(char *str, t_philo *philo);
-
-//	time --------------------------------------------------------
-LONG	get_time(void);
 
 #endif

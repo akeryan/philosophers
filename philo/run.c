@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 19:44:11 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/10 17:25:58 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/10 20:17:06 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	*monitor(void *data_pointer)
 	while (philo->data->dead == false)
 	{
 		pthread_mutex_lock(&philo->lock);
-		if (philo->data->finished >= philo->data->philo_num)
+		if (philo->data->philos_done_eating >= philo->data->philo_num)
 			philo->data->dead = true;
 		pthread_mutex_unlock(&philo->lock);
 	}
@@ -38,12 +38,12 @@ void	*supervisor(void *philo_ptr)
 	while (philo->data->dead == false)
 	{
 		pthread_mutex_lock(&philo->lock);
-		if (get_time() >= philo->time_to_die && philo->eating == 0)
+		if (get_time() >= philo->time_to_die && philo->eating == false)
 			print_state(DIED, philo);
 		if (philo->eat_count == philo->data->meals_num)
 		{
 			pthread_mutex_lock(&philo->data->lock);
-			philo->data->finished++;
+			philo->data->philos_done_eating++;
 			philo->eat_count++;
 			pthread_mutex_unlock(&philo->data->lock);
 		}
@@ -58,35 +58,35 @@ void	*routine(void *philo_ptr)
 
 	philo = (t_philo *) philo_ptr;
 	philo->time_to_die = philo->data->life_span + get_time();
-	if (pthread_create(&philo->t1, NULL, &supervisor, (void *)philo))
+	if (pthread_create(&philo->th, NULL, &supervisor, (void *)philo))
 		return ((void *)1);
 	while (philo->data->dead == false)
 	{
 		eat(philo);
 		print_state(THINKING, philo);
 	}
-	if (pthread_join(philo->t1, NULL))
+	if (pthread_join(philo->th, NULL))
 		return ((void *)1);
 	return ((void *)0);
 }
 
 int	run(t_data *data)
 {
+	pthread_t	thd;
 	int			i;
-	pthread_t	t0;
 
 	i = -1;
 	data->start_time = get_time();
 	if (data->meals_num > 0)
 	{
-		if (pthread_create(&t0, NULL, &monitor, &data->philos[0]))
+		if (pthread_create(&thd, NULL, &monitor, &data->philos[0]))
 			return (error_msg("thread creation failed in run()", data));
 	}
 	while (++i < data->philo_num)
 	{
 		if (pthread_create(&data->thread_id[i], NULL, &routine, &data->philos[i]))
 			return (error_msg("thread creation failed in run()", data));
-		ft_usleep(1);
+		usleep(100);
 	}
 	i = -1;
 	while (++i < data->philo_num)

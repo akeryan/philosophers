@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 18:28:35 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/10 17:38:35 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/10 18:36:06 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,7 @@ void	init_philos(t_data *data)
 		data->philos[i].id = i + 1;
 		data->philos[i].time_to_die = data->life_span;
 		data->philos[i].eat_count = 0;
-		data->philos[i].eating = 0;
-		data->philos[i].status = 0;
+		data->philos[i].eating = false;
 		pthread_mutex_init(&data->philos[i].lock, NULL);
 	}
 }
@@ -72,7 +71,7 @@ int	init_data(int argc, char **argv, t_data *data)
 	else
 		data->meals_num = -1;
 	data->dead = false;
-	data->finished = 0;
+	data->philos_done_eating = 0;
 	pthread_mutex_init(&data->write, NULL);
 	pthread_mutex_init(&data->lock, NULL);
 	return (0);

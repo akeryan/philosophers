@@ -32,12 +32,11 @@ struct	s_data;
 typedef struct s_philo
 {
 	struct s_data	*data;
-	pthread_t		t1;
 	int				id;
 	int				eat_count;
-	int				status;
-	int				eating;
+	bool			eating;
 	uint64_t		time_to_die;
+	pthread_t		th;
 	pthread_mutex_t	lock;
 	pthread_mutex_t	*r_fork;
 	pthread_mutex_t	*l_fork;
@@ -45,16 +44,16 @@ typedef struct s_philo
 
 typedef struct s_data
 {
-	pthread_t		*thread_id;
+	t_philo			*philos;
 	int				meals_num;
 	bool			dead;
-	int				finished;
-	t_philo			*philos;
+	int				philos_done_eating;
 	int				philo_num;
 	LONG			life_span;
 	LONG			eat_span;
 	LONG			sleep_span;
 	LONG			start_time;
+	pthread_t		*thread_id;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	lock;
 	pthread_mutex_t	write;
@@ -86,6 +85,5 @@ void		print_state(char *str, t_philo *philo);
 
 //	time --------------------------------------------------------
 LONG	get_time(void);
-int			ft_usleep(useconds_t time);
 
 #endif

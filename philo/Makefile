@@ -6,13 +6,14 @@
 #    By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/08 19:39:51 by akeryan           #+#    #+#              #
-#    Updated: 2024/03/10 13:25:52 by akeryan          ###   ########.fr        #
+#    Updated: 2024/03/10 18:07:51 by akeryan          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo 
 
-CC = cc #-pthreads
+CC = cc
+
 FLAGS = -Wall -Wextra -Werror
 
 MANDATORY = run.c \

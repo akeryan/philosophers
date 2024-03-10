@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 19:48:30 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/10 17:38:35 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/10 20:21:20 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,16 +45,6 @@ int	ft_atoi(const char *str)
 	}
 	return (num * sign);
 }	
-
-int	ft_usleep(useconds_t time)
-{
-	LONG	start;
-
-	start = get_time();
-	while ((get_time() - start) < time)
-		usleep(time / 10);
-	return (0);
-}
 
 int	ft_strcmp(const char *s1, const char *s2)
 {

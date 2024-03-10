@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 19:02:41 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/10 17:38:35 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/10 20:21:27 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ LONG	get_time(void)
 	struct timeval	tv;
 
 	if (gettimeofday(&tv, NULL))
-		return (error_msg("gettimeofday() FAILURE\n", NULL));
+		return (error_msg("gettimeofday() failed in get_time()\n", NULL));
 	return ((tv.tv_sec * (LONG)1000) + (tv.tv_usec / 1000));
 }
 
@@ -50,19 +50,19 @@ void	drop_forks(t_philo *philo)
 	pthread_mutex_unlock(philo->l_fork);
 	pthread_mutex_unlock(philo->r_fork);
 	print_state(SLEEPING, philo);
-	ft_usleep(philo->data->sleep_span);
+	usleep(philo->data->sleep_span * 1000);
 }
 
 void	eat(t_philo *philo)
 {
 	grab_forks(philo);
 	pthread_mutex_lock(&philo->lock);
-	philo->eating = 1;
+	philo->eating = true;
 	philo->time_to_die = get_time() + philo->data->life_span;
 	print_state(EATING, philo);
 	philo->eat_count++;
-	ft_usleep(philo->data->eat_span);
-	philo->eating = 0;
+	usleep(philo->data->eat_span * 1000);
+	philo->eating = false;
 	pthread_mutex_unlock(&philo->lock);
 	drop_forks(philo);
 }

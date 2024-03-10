@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 19:44:11 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/10 20:17:06 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/10 22:40:22 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	*monitor(void *data_pointer)
 	return ((void *)0);
 }
 
-void	*supervisor(void *philo_ptr)
+void	*philo_inspector(void *philo_ptr)
 {
 	t_philo	*philo;
 
@@ -57,8 +57,8 @@ void	*routine(void *philo_ptr)
 	t_philo	*philo;
 
 	philo = (t_philo *) philo_ptr;
-	philo->time_to_die = philo->data->life_span + get_time();
-	if (pthread_create(&philo->th, NULL, &supervisor, (void *)philo))
+	philo->time_to_die = get_time() + philo->data->life_span;
+	if (pthread_create(&philo->th, NULL, &philo_inspector, (void *)philo))
 		return ((void *)1);
 	while (philo->data->dead == false)
 	{

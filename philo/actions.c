@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 19:02:41 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/10 20:21:27 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/10 22:14:44 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,16 @@ void	print_state(char *str, t_philo *philo)
 
 void	grab_forks(t_philo *philo)
 {
-	pthread_mutex_lock(philo->r_fork);
+	pthread_mutex_lock(philo->right_fork);
 	print_state(FORK, philo);
-	pthread_mutex_lock(philo->l_fork);
+	pthread_mutex_lock(philo->left_fork);
 	print_state(FORK, philo);
 }
 
 void	drop_forks(t_philo *philo)
 {
-	pthread_mutex_unlock(philo->l_fork);
-	pthread_mutex_unlock(philo->r_fork);
+	pthread_mutex_unlock(philo->left_fork);
+	pthread_mutex_unlock(philo->right_fork);
 	print_state(SLEEPING, philo);
 	usleep(philo->data->sleep_span * 1000);
 }

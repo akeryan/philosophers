@@ -79,6 +79,7 @@ int			ft_strcmp(const char *s1, const char *s2);
 void		free_data(t_data	*data);
 void		destroy(t_data *data);
 LONG		get_time(void);
+int			ft_usleep(useconds_t time);
 
 // error handling/messaging --------------------------------------
 int			error_msg(char *str, t_data *data);

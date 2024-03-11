@@ -83,6 +83,6 @@ int			ft_usleep(useconds_t time);
 
 // error handling/messaging --------------------------------------
 int			error_msg(char *str, t_data *data);
-void		print_state(char *str, t_philo *philo);
+void		change_state(char *str, t_philo *philo);
 
 #endif

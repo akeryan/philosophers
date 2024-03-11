@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 19:44:11 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/11 17:29:28 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/11 21:00:38 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@ void	*monitor(void *data_pointer)
 	t_philo	*philo;
 
 	philo = (t_philo *) data_pointer;
-	//pthread_mutex_lock(&philo->data->write);
-	//pthread_mutex_unlock(&philo->data->write);
 	while (philo->data->dead == false)
 	{
 		pthread_mutex_lock(&philo->lock);
@@ -57,15 +55,13 @@ void	*routine(void *philo_ptr)
 
 	philo = (t_philo *) philo_ptr;
 	philo->time_to_die = get_time() + philo->data->life_span;
-	//if (pthread_create(&philo->th, NULL, &philo_inspector, (void *)philo))
-		//return ((void *)1);
 	while (philo->data->dead == false)
 	{
+		if (get_time() >= philo->time_to_die)
+			change_state(DIED, philo);
 		eat(philo);
 		change_state(THINKING, philo);
 	}
-	//if (pthread_join(philo->th, NULL))
-		//return ((void *)1);
 	return ((void *)0);
 }
 

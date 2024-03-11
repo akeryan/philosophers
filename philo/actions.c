@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 19:02:41 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/11 17:21:28 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/11 22:58:16 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,14 @@ void	grab_forks(t_philo *philo)
 {
 	pthread_mutex_lock(philo->right_fork);
 	change_state(FORK, philo);
-	pthread_mutex_lock(philo->left_fork);
+	if (philo->data->philo_num > 1)
+		pthread_mutex_lock(philo->left_fork);
+	else
+	{
+		while (get_time() < philo->time_to_die)
+			usleep(100);
+		change_state(DIED, philo);
+	}
 	change_state(FORK, philo);
 }
 
@@ -57,8 +64,8 @@ static void	*concious_sleep(t_philo *philo, unsigned long eating_span)
 {
 	while (philo->data->dead == false)
 	{
-		usleep(1);
-		if (get_time() >= philo->time_to_die && philo->eating == false)
+		usleep(100);
+		if (get_time() >= philo->time_to_die)
 			change_state(DIED, philo);
 		if (get_time() >= eating_span)
 			break;

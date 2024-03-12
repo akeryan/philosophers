@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 18:28:35 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/10 22:23:43 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/12 13:22:22 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ void	init_philos(t_data *data)
 		data->philos[i].time_to_die = get_time() + data->life_span;
 		data->philos[i].eat_count = 0;
 		data->philos[i].eating = false;
-		pthread_mutex_init(&data->philos[i].lock, NULL);
+		pthread_mutex_init(&data->philos[i].lock_1, NULL);
+		pthread_mutex_init(&data->philos[i].lock_2, NULL);
 	}
 }
 

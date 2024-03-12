@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 19:44:11 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/11 21:00:38 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/12 13:24:29 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,32 +19,10 @@ void	*monitor(void *data_pointer)
 	philo = (t_philo *) data_pointer;
 	while (philo->data->dead == false)
 	{
-		pthread_mutex_lock(&philo->lock);
+		pthread_mutex_lock(&philo->lock_1);
 		if (philo->data->philos_done_eating >= philo->data->philo_num)
 			philo->data->dead = true;
-		pthread_mutex_unlock(&philo->lock);
-	}
-	return ((void *)0);
-}
-
-void	*philo_inspector(void *philo_ptr)
-{
-	t_philo	*philo;
-
-	philo = (t_philo *) philo_ptr;
-	while (philo->data->dead == false)
-	{
-		pthread_mutex_lock(&philo->lock);
-		if (get_time() >= philo->time_to_die && philo->eating == false)
-			change_state(DIED, philo);
-		if (philo->eat_count == philo->data->meals_num)
-		{
-			pthread_mutex_lock(&philo->data->lock);
-			philo->data->philos_done_eating++;
-			philo->eat_count++;
-			pthread_mutex_unlock(&philo->data->lock);
-		}
-		pthread_mutex_unlock(&philo->lock);
+		pthread_mutex_unlock(&philo->lock_1);
 	}
 	return ((void *)0);
 }
@@ -60,6 +38,8 @@ void	*routine(void *philo_ptr)
 		if (get_time() >= philo->time_to_die)
 			change_state(DIED, philo);
 		eat(philo);
+		if (get_time() >= philo->time_to_die)
+			change_state(DIED, philo);
 		change_state(THINKING, philo);
 	}
 	return ((void *)0);

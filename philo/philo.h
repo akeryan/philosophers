@@ -37,7 +37,8 @@ typedef struct s_philo
 	bool			eating;
 	uint64_t		time_to_die;
 	pthread_t		th;
-	pthread_mutex_t	lock;
+	pthread_mutex_t	lock_1;
+	pthread_mutex_t	lock_2;
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	*left_fork;
 }	t_philo;
@@ -79,7 +80,6 @@ int			ft_strcmp(const char *s1, const char *s2);
 void		free_data(t_data	*data);
 void		destroy(t_data *data);
 LONG		get_time(void);
-int			ft_usleep(useconds_t time);
 
 // error handling/messaging --------------------------------------
 int			error_msg(char *str, t_data *data);

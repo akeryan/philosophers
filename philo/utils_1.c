@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 13:26:13 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/11 21:04:17 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/12 13:23:42 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ void	destroy(t_data *data)
 	while (++i < data->philo_num)
 	{
 		pthread_mutex_destroy(&data->forks[i]);
-		pthread_mutex_destroy(&data->philos[i].lock);
+		pthread_mutex_destroy(&data->philos[i].lock_1);
+		pthread_mutex_destroy(&data->philos[i].lock_2);
 	}
 	pthread_mutex_destroy(&data->write);
 	pthread_mutex_destroy(&data->lock);

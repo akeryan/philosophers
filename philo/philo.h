@@ -71,7 +71,7 @@ int			init(int argc, char **argv, t_data *data);
 
 //	actions -----------------------------------------------------
 void		eat(t_philo *philo);
-void		grab_forks(t_philo *philo);
+int			grab_forks(t_philo *philo);
 void		drop_forks(t_philo *philo);
 
 //	utils --------------------------------------------------------

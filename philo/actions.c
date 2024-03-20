@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 19:02:41 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/20 16:54:25 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/20 19:16:56 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,14 @@ void	change_state(char *str, t_philo *philo)
 	pthread_mutex_unlock(&philo->data->write);
 }
 
-void	grab_forks(t_philo *philo)
+int	grab_forks(t_philo *philo)
 {
 	pthread_mutex_lock(philo->right_fork);
 	if (get_time() > philo->time_to_die)
+	{
 		change_state(DIED, philo);
+		return (-1);
+	}
 	change_state(TAKE_FORK, philo);
 	if (philo->data->philo_num == 1)
 	{
@@ -54,6 +57,7 @@ void	grab_forks(t_philo *philo)
 		pthread_mutex_lock(philo->left_fork);
 		change_state(TAKE_FORK, philo);
 	}
+	return (0);
 }
 
 void	drop_forks(t_philo *philo)
@@ -72,13 +76,16 @@ void	drop_forks(t_philo *philo)
 	}
 }
 
-static void	*concious_sleep(t_philo *philo, unsigned long eating_span)
+static int	concious_sleep(t_philo *philo, unsigned long eating_span)
 {
 	while (get_time() < eating_span)
 	{
 		usleep(100);
 		if (get_time() >= philo->time_to_die)
+		{
 			change_state(DIED, philo);
+			return (-1);
+		}
 	}
 	pthread_mutex_lock(&philo->lock_2);
 	philo->eat_count++;
@@ -89,12 +96,13 @@ static void	*concious_sleep(t_philo *philo, unsigned long eating_span)
 		philo->data->philos_done_eating++;
 		pthread_mutex_unlock(&philo->data->lock);
 	}
-	return ((void *)0);
+	return (0);
 }
 
 void	eat(t_philo *philo)
 {
-	grab_forks(philo);
+	if (grab_forks(philo) < 0)
+		return ;
 	pthread_mutex_lock(&philo->lock_1);
 	philo->eating = true;
 	change_state(EATING, philo);

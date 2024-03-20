@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 19:44:11 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/12 13:24:29 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/20 16:25:49 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ void	*routine(void *philo_ptr)
 	philo->time_to_die = get_time() + philo->data->life_span;
 	while (philo->data->dead == false)
 	{
-		if (get_time() >= philo->time_to_die)
-			change_state(DIED, philo);
 		eat(philo);
 		if (get_time() >= philo->time_to_die)
 			change_state(DIED, philo);

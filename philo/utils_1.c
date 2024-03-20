@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 13:26:13 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/12 13:23:42 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/20 15:05:59 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,3 +57,14 @@ int	error_msg(char *str, t_data *data)
 		destroy(data);
 	return (1);
 }
+
+//int	alert_sleeping(LONG sleep_time)
+//{
+	//while (get_time() < sleep_time)
+	//{
+		//usleep(100);
+		//if (get_time() >= philo->time_to_die)
+			//change_state(DIED, philo);
+	//}
+
+//}

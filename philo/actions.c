@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 19:02:41 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/12 13:25:26 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/20 16:54:25 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,24 +40,36 @@ void	change_state(char *str, t_philo *philo)
 void	grab_forks(t_philo *philo)
 {
 	pthread_mutex_lock(philo->right_fork);
-	change_state(FORK, philo);
-	if (philo->data->philo_num > 1)
-		pthread_mutex_lock(philo->left_fork);
-	else
+	if (get_time() > philo->time_to_die)
+		change_state(DIED, philo);
+	change_state(TAKE_FORK, philo);
+	if (philo->data->philo_num == 1)
 	{
 		while (get_time() < philo->time_to_die)
 			usleep(100);
 		change_state(DIED, philo);
 	}
-	change_state(FORK, philo);
+	else
+	{
+		pthread_mutex_lock(philo->left_fork);
+		change_state(TAKE_FORK, philo);
+	}
 }
 
 void	drop_forks(t_philo *philo)
 {
+	LONG	wake_up_time;
+
 	pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
 	change_state(SLEEPING, philo);
-	usleep(philo->data->sleep_span * 1000);
+	wake_up_time = get_time() + philo->data->sleep_span;
+	while (get_time() < wake_up_time && philo->data->dead == false)
+	{
+		usleep(100);
+		if (get_time() >= philo->time_to_die)
+			change_state(DIED, philo);
+	}
 }
 
 static void	*concious_sleep(t_philo *philo, unsigned long eating_span)
@@ -85,9 +97,9 @@ void	eat(t_philo *philo)
 	grab_forks(philo);
 	pthread_mutex_lock(&philo->lock_1);
 	philo->eating = true;
-	philo->time_to_die = get_time() + philo->data->life_span;
 	change_state(EATING, philo);
 	concious_sleep(philo, get_time() + philo->data->eat_span);
+	philo->time_to_die = get_time() + philo->data->life_span;
 	philo->eating = false;
 	pthread_mutex_unlock(&philo->lock_1);
 	drop_forks(philo);

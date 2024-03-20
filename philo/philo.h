@@ -24,7 +24,7 @@
 # define THINKING		"is thinking"
 # define SLEEPING		"is sleeping"
 # define EATING			"is eating"
-# define FORK			"has taken a fork"
+# define TAKE_FORK			"has taken a fork"
 # define DIED			"died"
 
 struct	s_data;

@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 19:44:11 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/20 16:25:49 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/21 17:43:28 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,25 @@
 void	*monitor(void *data_pointer)
 {
 	t_philo	*philo;
+	bool	state;
 
 	philo = (t_philo *) data_pointer;
-	while (philo->data->dead == false)
+	while (1)
 	{
-		pthread_mutex_lock(&philo->lock_1);
-		if (philo->data->philos_done_eating >= philo->data->philo_num)
-			philo->data->dead = true;
-		pthread_mutex_unlock(&philo->lock_1);
+		pthread_mutex_lock(&philo->data->write);
+		state = philo->data->dead; 
+		pthread_mutex_unlock(&philo->data->write);
+		if (state == false)
+		{
+			if (philo->data->philos_done_eating == philo->data->philo_num)
+			{
+				pthread_mutex_lock(&philo->data->write);
+				philo->data->dead = true;
+				pthread_mutex_unlock(&philo->data->write);
+			}
+		}
+		else
+			break ;
 	}
 	return ((void *)0);
 }
@@ -30,15 +41,27 @@ void	*monitor(void *data_pointer)
 void	*routine(void *philo_ptr)
 {
 	t_philo	*philo;
+	bool	state;
 
 	philo = (t_philo *) philo_ptr;
 	philo->time_to_die = get_time() + philo->data->life_span;
-	while (philo->data->dead == false)
+	while (1)
 	{
-		eat(philo);
-		if (get_time() >= philo->time_to_die)
-			change_state(DIED, philo);
-		change_state(THINKING, philo);
+		pthread_mutex_lock(&philo->data->write);
+		state = philo->data->dead;
+		pthread_mutex_unlock(&philo->data->write);
+		if (state == false)
+		{
+			eat(philo);
+			if (get_time() >= philo->time_to_die)
+			{
+				change_state(DIED, philo);
+				break ;
+			}
+			change_state(THINKING, philo);
+		}
+		else
+			break ;
 	}
 	return ((void *)0);
 }

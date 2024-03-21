@@ -24,7 +24,7 @@
 # define THINKING		"is thinking"
 # define SLEEPING		"is sleeping"
 # define EATING			"is eating"
-# define TAKE_FORK			"has taken a fork"
+# define TAKE_FORK		"has taken a fork"
 # define DIED			"died"
 
 struct	s_data;
@@ -35,7 +35,7 @@ typedef struct s_philo
 	int				id;
 	int				eat_count;
 	bool			eating;
-	uint64_t		time_to_die;
+	LONG			time_to_die;
 	pthread_t		th;
 	pthread_mutex_t	lock_1;
 	pthread_mutex_t	lock_2;

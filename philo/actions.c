@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 19:02:41 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/20 19:16:56 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/21 17:54:02 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,9 @@ void	change_state(char *str, t_philo *philo)
 		philo->data->dead = true;
 	}
 	if (philo->data->dead == false)
+	{
 		printf("%llu %d %s\n", time, philo->id, str);
+	}
 	pthread_mutex_unlock(&philo->data->write);
 }
 
@@ -63,16 +65,28 @@ int	grab_forks(t_philo *philo)
 void	drop_forks(t_philo *philo)
 {
 	LONG	wake_up_time;
+	bool	state;
 
 	pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
 	change_state(SLEEPING, philo);
 	wake_up_time = get_time() + philo->data->sleep_span;
-	while (get_time() < wake_up_time && philo->data->dead == false)
+	while (get_time() < wake_up_time)
 	{
-		usleep(100);
-		if (get_time() >= philo->time_to_die)
-			change_state(DIED, philo);
+		pthread_mutex_lock(&philo->data->write);
+		state = philo->data->dead; 
+		pthread_mutex_unlock(&philo->data->write);
+		if (state == false)
+		{
+			usleep(100);
+			if (get_time() >= philo->time_to_die)
+			{
+				change_state(DIED, philo);
+				break ;
+			}
+		}
+		else
+			break;
 	}
 }
 
@@ -104,10 +118,10 @@ void	eat(t_philo *philo)
 	if (grab_forks(philo) < 0)
 		return ;
 	pthread_mutex_lock(&philo->lock_1);
-	philo->eating = true;
 	change_state(EATING, philo);
-	concious_sleep(philo, get_time() + philo->data->eat_span);
 	philo->time_to_die = get_time() + philo->data->life_span;
+	philo->eating = true;
+	concious_sleep(philo, get_time() + philo->data->eat_span);
 	philo->eating = false;
 	pthread_mutex_unlock(&philo->lock_1);
 	drop_forks(philo);

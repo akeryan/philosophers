@@ -1,25 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   actions.c                                          :+:      :+:    :+:   */
+/*   actions_0.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 19:02:41 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/21 17:54:02 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/21 21:27:01 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-LONG	get_time(void)
-{
-	struct timeval	tv;
-
-	if (gettimeofday(&tv, NULL))
-		return (error_msg("gettimeofday() failed in get_time()\n", NULL));
-	return ((tv.tv_sec * (LONG)1000) + (tv.tv_usec / 1000));
-}
 
 void	change_state(char *str, t_philo *philo)
 {
@@ -39,14 +30,39 @@ void	change_state(char *str, t_philo *philo)
 	pthread_mutex_unlock(&philo->data->write);
 }
 
+static	int	check_fork(t_fork *fork, t_philo *philo)
+{
+	bool	fork_state;
+
+	while (1)
+	{
+		pthread_mutex_lock(&fork->lock);
+		fork_state = fork->is_taken;
+		pthread_mutex_unlock(&fork->lock);
+		if (fork_state == false)
+		{
+			pthread_mutex_lock(&fork->lock);
+			fork->is_taken = true;
+			pthread_mutex_unlock(&fork->lock);
+			return (0);
+		}
+		else
+		{
+			usleep(10);
+			if (get_time() > philo->time_to_die)
+			{
+				change_state(DIED, philo);
+				return (-1);
+			}
+		}
+	}
+	return (0);
+}
+
 int	grab_forks(t_philo *philo)
 {
-	pthread_mutex_lock(philo->right_fork);
-	if (get_time() > philo->time_to_die)
-	{
-		change_state(DIED, philo);
+	if (check_fork(philo->right_fork, philo) < 0)
 		return (-1);
-	}
 	change_state(TAKE_FORK, philo);
 	if (philo->data->philo_num == 1)
 	{
@@ -56,25 +72,21 @@ int	grab_forks(t_philo *philo)
 	}
 	else
 	{
-		pthread_mutex_lock(philo->left_fork);
+		if (check_fork(philo->left_fork, philo) < 0)
+			return (-1);
 		change_state(TAKE_FORK, philo);
 	}
 	return (0);
 }
 
-void	drop_forks(t_philo *philo)
+static void	while_asleep(t_philo *philo, LONG wake_up_time)
 {
-	LONG	wake_up_time;
 	bool	state;
 
-	pthread_mutex_unlock(philo->left_fork);
-	pthread_mutex_unlock(philo->right_fork);
-	change_state(SLEEPING, philo);
-	wake_up_time = get_time() + philo->data->sleep_span;
 	while (get_time() < wake_up_time)
 	{
 		pthread_mutex_lock(&philo->data->write);
-		state = philo->data->dead; 
+		state = philo->data->dead;
 		pthread_mutex_unlock(&philo->data->write);
 		if (state == false)
 		{
@@ -86,43 +98,21 @@ void	drop_forks(t_philo *philo)
 			}
 		}
 		else
-			break;
+			break ;
 	}
 }
 
-static int	concious_sleep(t_philo *philo, unsigned long eating_span)
+void	drop_forks(t_philo *philo)
 {
-	while (get_time() < eating_span)
-	{
-		usleep(100);
-		if (get_time() >= philo->time_to_die)
-		{
-			change_state(DIED, philo);
-			return (-1);
-		}
-	}
-	pthread_mutex_lock(&philo->lock_2);
-	philo->eat_count++;
-	pthread_mutex_unlock(&philo->lock_2);
-	if (philo->eat_count == philo->data->meals_num)
-	{
-		pthread_mutex_lock(&philo->data->lock);
-		philo->data->philos_done_eating++;
-		pthread_mutex_unlock(&philo->data->lock);
-	}
-	return (0);
-}
+	LONG	wake_up_time;
 
-void	eat(t_philo *philo)
-{
-	if (grab_forks(philo) < 0)
-		return ;
-	pthread_mutex_lock(&philo->lock_1);
-	change_state(EATING, philo);
-	philo->time_to_die = get_time() + philo->data->life_span;
-	philo->eating = true;
-	concious_sleep(philo, get_time() + philo->data->eat_span);
-	philo->eating = false;
-	pthread_mutex_unlock(&philo->lock_1);
-	drop_forks(philo);
+	pthread_mutex_lock(&philo->left_fork->lock);
+	philo->left_fork->is_taken = false;
+	pthread_mutex_unlock(&philo->left_fork->lock);
+	pthread_mutex_lock(&philo->right_fork->lock);
+	philo->right_fork->is_taken = false;
+	pthread_mutex_unlock(&philo->right_fork->lock);
+	change_state(SLEEPING, philo);
+	wake_up_time = get_time() + philo->data->sleep_span;
+	while_asleep(philo, wake_up_time);
 }

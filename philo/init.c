@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 18:28:35 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/21 15:12:26 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/21 21:12:41 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	init_alloc(t_data *data)
 	data->thread_id = malloc(sizeof(pthread_t) * data->philo_num);
 	if (!data->thread_id)
 		return (error_msg("malloc failed in init_alloc()_1", data));
-	data->forks = malloc(sizeof(pthread_mutex_t) * data->philo_num);
+	data->forks = malloc(sizeof(t_fork) * data->philo_num);
 	if (!data->forks)
 		return (error_msg("malloc failed in init_alloc()_2", data));
 	data->philos = malloc(sizeof(t_philo) * data->philo_num);
@@ -32,7 +32,10 @@ int	init_forks(t_data *data)
 
 	i = -1;
 	while (++i < data->philo_num)
-		pthread_mutex_init(&data->forks[i], NULL);
+	{
+		data->forks[i].is_taken = false;
+		pthread_mutex_init(&data->forks[i].lock, NULL);
+	}
 	i = 0;
 	data->philos[0].left_fork = &data->forks[0];
 	data->philos[0].right_fork = &data->forks[data->philo_num - 1];

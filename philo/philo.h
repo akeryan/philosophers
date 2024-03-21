@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 10:29:51 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/10 16:53:16 akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/21 21:27:15 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,12 @@
 
 struct	s_data;
 
+typedef struct s_fork
+{
+	bool			is_taken;
+	pthread_mutex_t	lock;
+}	t_fork;
+
 typedef struct s_philo
 {
 	struct s_data	*data;
@@ -39,8 +45,8 @@ typedef struct s_philo
 	pthread_t		th;
 	pthread_mutex_t	lock_1;
 	pthread_mutex_t	lock_2;
-	pthread_mutex_t	*right_fork;
-	pthread_mutex_t	*left_fork;
+	t_fork			*right_fork;
+	t_fork			*left_fork;
 }	t_philo;
 
 typedef struct s_data
@@ -55,7 +61,7 @@ typedef struct s_data
 	LONG			sleep_span;
 	LONG			start_time;
 	pthread_t		*thread_id;
-	pthread_mutex_t	*forks;
+	t_fork			*forks;
 	pthread_mutex_t	lock;
 	pthread_mutex_t	write;
 }	t_data;
@@ -63,7 +69,6 @@ typedef struct s_data
 //	prime -------------------------------------------------------
 int			run(t_data *data);
 void		*routine(void *philo_ptr);
-int			one_philo(t_data *data);
 
 //	preprocessing --------------------------------------------------------
 int			parsing(int argc, char *argv[]);

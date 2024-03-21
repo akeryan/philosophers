@@ -6,7 +6,7 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 13:26:13 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/21 15:20:27 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/21 21:20:14 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	destroy(t_data *data)
 	i = -1;
 	while (++i < data->philo_num)
 	{
-		pthread_mutex_destroy(&data->forks[i]);
+		pthread_mutex_destroy(&data->forks[i].lock);
 		pthread_mutex_destroy(&data->philos[i].lock_1);
 		pthread_mutex_destroy(&data->philos[i].lock_2);
 	}
@@ -44,4 +44,13 @@ int	error_msg(char *str, t_data *data)
 	if (data)
 		destroy(data);
 	return (1);
+}
+
+LONG	get_time(void)
+{
+	struct timeval	tv;
+
+	if (gettimeofday(&tv, NULL))
+		return (error_msg("gettimeofday() failed in get_time()\n", NULL));
+	return ((tv.tv_sec * (LONG)1000) + (tv.tv_usec / 1000));
 }

@@ -6,11 +6,26 @@
 /*   By: akeryan <akeryan@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 19:44:11 by akeryan           #+#    #+#             */
-/*   Updated: 2024/03/21 17:43:28 by akeryan          ###   ########.fr       */
+/*   Updated: 2024/03/21 21:32:24 by akeryan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+static void	do_when_dead(t_philo *philo)
+{
+	int		done_eating;
+
+	pthread_mutex_lock(&philo->data->lock);
+	done_eating = philo->data->philos_done_eating;
+	pthread_mutex_unlock(&philo->data->lock);
+	if (done_eating == philo->data->philo_num)
+	{
+		pthread_mutex_lock(&philo->data->write);
+		philo->data->dead = true;
+		pthread_mutex_unlock(&philo->data->write);
+	}
+}
 
 void	*monitor(void *data_pointer)
 {
@@ -21,17 +36,10 @@ void	*monitor(void *data_pointer)
 	while (1)
 	{
 		pthread_mutex_lock(&philo->data->write);
-		state = philo->data->dead; 
+		state = philo->data->dead;
 		pthread_mutex_unlock(&philo->data->write);
 		if (state == false)
-		{
-			if (philo->data->philos_done_eating == philo->data->philo_num)
-			{
-				pthread_mutex_lock(&philo->data->write);
-				philo->data->dead = true;
-				pthread_mutex_unlock(&philo->data->write);
-			}
-		}
+			do_when_dead(philo);
 		else
 			break ;
 	}
@@ -44,7 +52,6 @@ void	*routine(void *philo_ptr)
 	bool	state;
 
 	philo = (t_philo *) philo_ptr;
-	philo->time_to_die = get_time() + philo->data->life_span;
 	while (1)
 	{
 		pthread_mutex_lock(&philo->data->write);
@@ -77,10 +84,12 @@ int	run(t_data *data)
 	{
 		if (pthread_create(&thd, NULL, &monitor, &data->philos[0]))
 			return (error_msg("thread creation failed in run()", data));
+		pthread_detach(thd);
 	}
 	while (++i < data->philo_num)
 	{
-		if (pthread_create(&data->thread_id[i], NULL, &routine, &data->philos[i]))
+		if (pthread_create(&data->thread_id[i], NULL, &routine, \
+			&data->philos[i]))
 			return (error_msg("thread creation failed in run()", data));
 		usleep(100);
 	}
